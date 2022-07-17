@@ -1,34 +1,124 @@
 import React from "react";
-import './styles/global.css';
-import './App.css';
+import "./styles/global.css";
+import "./App.css";
 import Box from "./components/Box";
 
-
-const tempMin = -20
-const tempMax= 40
-const heartMin =  80
-const heartMax = 180
-const stepsMin = 0
-const stepsMax = 50000
+const tempMin = -20;
+const tempMax = 40;
+const heartMin = 80;
+const heartMax = 180;
+const stepsMin = 0;
+const stepsMax = 50000;
 
 class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      water: 1.5,
+      heart: 120,
+      temperature: -10,
+      steps: 3000,
+    };
+  }
+
+  // onTemperatureChange = (e) => {
+  //   this.setState({
+  //     temperature: e.target.value})
+  //   this.state.temperature > 20 &&
+  //   this.setState({water: this.state.water + 0.02})
+  // }
+  onHeartChange = (e) => {
+    this.setState({
+      heart: e.target.value,
+    });
+    this.calculateWater();
+  };
+  onStepChange = (e) => {
+    this.setState({
+      steps: e.target.value,
+    });
+    this.calculateWater();
+  };
+  onTempChange = (e) => {
+    this.setState({
+      temperature: e.target.value,
+    });
+    this.calculateWater();
+  };
+
+  calculateWater = () => {
+    let result = 1.5;
+
+    if (this.state.temperature > 20) {
+      result += (this.state.temperature - 20) * 0.02;
+      this.setState({
+        water: result.toFixed(2),
+      });
+    }
+    if (this.state.heart > 120) {
+      result += (this.state.heart - 120) * 0.0008;
+      this.setState({
+        water: result.toFixed(2),
+      });
+    }
+    if (this.state.steps > 10000) {
+      result += (this.state.steps - 10000) * 0.00002;
+      this.setState({
+        water: result.toFixed(2),
+      });
+    }
+  };
+
   render() {
     return (
-      <div className ="container-fluid">
-        <div className ="row">
+      <div className="container-fluid">
+        <div className="row">
           {/* <p>{heartMin}</p>
           <p>{tempMin}</p>
           <p>{stepsMin}</p> */}
           {/* Water */}
-          <Box icon="local_drink" color="#3A85FF" value={1.5} unit="L" />
+          <Box
+            name="water"
+            icon="local_drink"
+            color="#3A85FF"
+            value={this.state.water}
+            unit="L"
+          />
           {/* Steps */}
-          <Box icon="directions_walk" color="black" value={3000} unit="steps"/>
-          {/* Heart */}
-          <Box icon="favorite" color="red" value={1.5} unit="bpm"/>
-          {/* Temperature */}
-          <Box icon="wb_sunny" color="yellow" value={-10} unit="°C"/>
-        </div>
+          <Box
+            name="steps"
+            icon="directions_walk"
+            color="black"
+            value={this.state.steps}
+            unit="steps"
+            minimum={stepsMin}
+            maximum={stepsMax}
+            change={this.onStepChange}
+          />
 
+          {/* Heart */}
+          <Box
+            name="heart"
+            icon="favorite"
+            color="red"
+            value={this.state.heart}
+            unit="bpm"
+            minimum={heartMin}
+            maximum={heartMax}
+            change={this.onHeartChange}
+          />
+          {/* Temperature */}
+          <Box
+            name="temperature"
+            icon="wb_sunny"
+            color="yellow"
+            value={this.state.temperature}
+            unit="°C"
+            minimum={tempMin}
+            maximum={tempMax}
+            change={this.onTempChange}
+          />
+        </div>
       </div>
     );
   }
